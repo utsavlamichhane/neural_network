@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=trun_228
+#SBATCH --job-name=deep_learning_accuracy
 #SBATCH --partition=highmem_p
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=30
-#SBATCH --mem=120G
+#SBATCH --mem=1G
 #SBATCH --time=168:00:00
 #SBATCH --export=NONE
 #SBATCH --output=%x_%j.out
@@ -15,8 +15,8 @@
 cd $SLURM_SUBMIT_DIR
 mkdir -p /lscratch/$ul54354/$SLURM_JOB_ID
 
-#module
+# Load the module for Python and any other modules needed
 module load python/3.8.0
 
-#script_py
-python3 train_model.py
+# Run the Python script
+python3 model_rumen_deep.py && cp model_accuracies.xlsx $SLURM_SUBMIT_DIR/ && rm -rf /lscratch/$ul54354/$SLURM_JOB_ID
