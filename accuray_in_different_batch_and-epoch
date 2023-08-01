@@ -1,0 +1,46 @@
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+
+#using rumen data, 
+df = pd.read_excel("rumen.xlsx")
+
+X = df.iloc[:, 1:]
+y = df.iloc[:, 0]
+
+encoder = LabelEncoder()
+y = encoder.fit_transform(y)
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=250)
+
+# result_df
+results = pd.DataFrame(columns=["Epochs", "Batch_Size", "Accuracy"])
+
+#diff_epo_and_batch_f_loop
+for epochs in range(50, 501):  # Changed range
+    for batch_size in range(5, 51):  # Changed range
+        # Create the model
+        model = Sequential()
+        model.add(Dense(32, input_dim=X_train.shape[1], activation='relu'))
+        model.add(Dense(16, activation='relu'))
+        model.add(Dense(len(set(y)), activation='softmax'))
+        
+        # Compile the model
+        model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+        
+        # Train the model
+        model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size, verbose=0)
+        
+        # Evaluate the model
+        _, accuracy = model.evaluate(X_test, y_test, verbose=0)
+        print(f"Epochs: {epochs}, Batch Size: {batch_size}, Accuracy: {accuracy}")
+        
+        # Append the results to the dataframe
+        results = results.append({"Epochs": epochs, "Batch_Size": batch_size, "Accuracy": accuracy}, ignore_index=True)
+
+# accuracies
+
+results.to_excel("model_accuracies.xlsx", index=False)
