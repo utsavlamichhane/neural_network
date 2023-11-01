@@ -5,7 +5,7 @@ from sklearn.preprocessing import LabelEncoder
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 
-#using rumen data, 
+#using the data as pandas dataframe, 
 df = pd.read_excel("your_data.xlsx")
 #the code assumes first column as target and other as features
 X = df.iloc[:, 1:]
